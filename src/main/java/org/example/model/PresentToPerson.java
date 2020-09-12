@@ -3,16 +3,14 @@ package org.example.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "present_quantity")
-public class PresentQuantity {
+@Table(name = "present_to_person")
+public class PresentToPerson {
 
     private long id;
     private PresentType presentType;
-    private int quantity;
+    private Person person;
 
-    public PresentQuantity() {
-
-    }
+    public PresentToPerson() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,12 +31,12 @@ public class PresentQuantity {
         this.presentType = presentType;
     }
 
-    @Column(name = "quantity")
-    public int getQuantity() {
-        return quantity;
+    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
+    public Person getPerson() {
+        return person;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 }

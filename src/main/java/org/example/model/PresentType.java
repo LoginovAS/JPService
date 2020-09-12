@@ -1,5 +1,9 @@
 package org.example.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table
 public class PresentType {
 
     private long id;
@@ -9,6 +13,9 @@ public class PresentType {
 
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "present_type_id")
     public long getId() {
         return id;
     }
@@ -17,6 +24,7 @@ public class PresentType {
         this.id = id;
     }
 
+    @Column(name = "type_name")
     public String getTypeName() {
         return typeName;
     }

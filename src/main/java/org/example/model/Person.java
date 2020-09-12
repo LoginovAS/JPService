@@ -1,14 +1,22 @@
 package org.example.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "person")
 public class Person {
 
     private long id;
-    private String name;
+    private String firstName;
+    private String lastName;
 
     public Person() {
 
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "person_id")
     public long getId() {
         return id;
     }
@@ -17,11 +25,21 @@ public class Person {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    @Column(name = "first_name")
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    @Column(name = "last_name")
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
