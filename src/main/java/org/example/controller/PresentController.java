@@ -2,10 +2,10 @@ package org.example.controller;
 
 import org.example.modelui.Request;
 import org.example.modelui.Response;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.example.system.Dispatcher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -13,8 +13,16 @@ import javax.validation.Valid;
 @RequestMapping("/jps")
 public class PresentController {
 
-    @PostMapping
+    @Autowired
+    private Dispatcher dispatcher;
+
+    @GetMapping("/request")
     public Response requestPresent(@Valid @RequestBody Request request) {
+        return dispatcher.processRequest(request);
+    }
+
+    @PostMapping("/supply")
+    public ResponseEntity<Response> supplyPresents(@Valid @RequestBody Request request) {
         return null;
     }
 

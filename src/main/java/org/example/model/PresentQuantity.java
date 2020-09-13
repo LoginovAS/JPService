@@ -24,6 +24,7 @@ public class PresentQuantity {
         this.id = id;
     }
 
+    @OneToOne
     @JoinColumn(name = "present_type_id", referencedColumnName = "present_type_id")
     public PresentType getPresentType() {
         return presentType;

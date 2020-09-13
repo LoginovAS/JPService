@@ -10,6 +10,6 @@ insert into person (first_name, last_name) values
 
 insert into present_quantity (present_type_id, quantity) values
     (1, 5),
-    (1, 5),
-    (1, 5);
+    (2, 5),
+    (3, 5);
 

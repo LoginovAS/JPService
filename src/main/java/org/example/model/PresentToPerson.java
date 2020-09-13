@@ -22,6 +22,7 @@ public class PresentToPerson {
         this.id = id;
     }
 
+    @ManyToOne
     @JoinColumn(name = "present_type_id", referencedColumnName = "present_type_id")
     public PresentType getPresentType() {
         return presentType;
@@ -31,6 +32,7 @@ public class PresentToPerson {
         this.presentType = presentType;
     }
 
+    @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     public Person getPerson() {
         return person;
