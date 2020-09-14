@@ -3,7 +3,7 @@
 JP Service helps to decide of sending Christmas presents to children depending on them behavior.
 
 ### Present request API
-Person can send GET-request to the system:
+Person can send POST-request to the system:
 e.g: http://localhost:8080/api/request
 
 with his name and present type.

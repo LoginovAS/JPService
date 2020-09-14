@@ -18,7 +18,7 @@ public class PresentController {
     @Autowired
     private Dispatcher dispatcher;
 
-    @GetMapping("/request")
+    @PostMapping("/request")
     public ResponseEntity<Response> requestPresent(@Valid @RequestBody Request request) throws ResourceNotFoundException {
         return ResponseEntity.ok(dispatcher.processUserRequest(request));
     }
