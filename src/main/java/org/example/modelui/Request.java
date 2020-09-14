@@ -1,5 +1,8 @@
 package org.example.modelui;
 
+/**
+ * User present request.
+ */
 public class Request {
 
     private String firstName;

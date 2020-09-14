@@ -1,42 +1,29 @@
 package org.example.modelui;
 
-import java.io.Serializable;
+/**
+ * Response for user's HTTP requests. Can be success or bad.
+ */
+public abstract class Response {
 
-public class Response implements Serializable {
+    private String message;
 
-    private String firstName;
-    private String lastName;
-    private String typeName;
+    public Response(String firstName, String lastName, String present) {
+        StringBuilder builder = new StringBuilder(firstName + " " + lastName);
+        builder
+                .append(" ")
+                .append(addAction())
+                .append(" ")
+                .append(present)
+                .append(" because of ")
+                .append(addReason());
 
-    public Response() {}
-
-    public Response(String firstName, String lastName, String typeName) {
-        this.setFirstName(firstName);
-        this.setLastName(lastName);
-        this.setTypeName(typeName);
+        message = builder.toString();
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
+    protected abstract String addAction();
+    protected abstract String addReason();
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public String getMessage() {
+        return message;
     }
 }

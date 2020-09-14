@@ -1,10 +1,9 @@
 package org.example.system;
 
-import org.springframework.stereotype.Service;
+import org.example.model.Person;
 
-@Service
 public interface BehaviorService {
 
-    boolean requestBehavior();
+    boolean requestBehavior(Person person);
 
 }

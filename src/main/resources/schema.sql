@@ -25,6 +25,7 @@ create table present_to_person (
     id int auto_increment primary key,
     person_id int not null,
     present_type_id int not null,
+    present_date timestamp not null,
     foreign key (person_id) references person (person_id),
     foreign key (present_type_id) references present_type (present_type_id)
 );

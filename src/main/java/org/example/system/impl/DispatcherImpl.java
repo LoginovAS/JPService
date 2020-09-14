@@ -1,17 +1,15 @@
 package org.example.system.impl;
 
+import org.example.exceptions.ResourceNotFoundException;
 import org.example.model.Person;
-import org.example.model.PresentQuantity;
 import org.example.model.PresentType;
-import org.example.modelui.Request;
-import org.example.modelui.Response;
-import org.example.repository.PersonRepository;
-import org.example.repository.PresentTypeRepository;
-import org.example.system.Dispatcher;
-import org.example.system.PersonService;
-import org.example.system.PresentService;
+import org.example.modelui.*;
+import org.example.system.*;
+import org.example.validation.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static org.example.validation.ValidationUtil.*;
 
 @Service
 public class DispatcherImpl implements Dispatcher {
@@ -22,18 +20,58 @@ public class DispatcherImpl implements Dispatcher {
     @Autowired
     private PersonService personSvc;
 
+    @Autowired
+    private BehaviorService behaviorSvc;
+
+    @Autowired
+    private PostService postSvc;
+
     @Override
-    public Response processRequest(Request request) {
-        Person person = personSvc.getPerson(request.getFirstName(), request.getLastName());
+    public Response processUserRequest(Request request) throws ResourceNotFoundException {
+        checkRequest(request);
 
-        PresentType presentType = presentSvc.takePresent(request.getPresentType());
+        String firstName = request.getFirstName();
+        String lastName = request.getLastName();
+        String present = request.getPresentType();
 
-        Response response = new Response(person.getFirstName(), person.getLastName(), presentType.getTypeName());
+        Person person = personSvc.getPerson(firstName, lastName);
 
-        return response;
+        boolean behavior = behaviorSvc.requestBehavior(person);
+
+        if (!behavior) {
+            return new BadResponse(firstName, lastName, present);
+        }
+
+        PresentType presentType = presentSvc.takePresent(present);
+
+        postSvc.sendPresentTo(presentType, person);
+
+        return new SuccessResponse(person.getFirstName(), person.getLastName(), presentType.getTypeName());
     }
 
-    private Person findPerson(String firstName, String lastName) {
-        return null;
+    private void checkRequest(Request request) {
+        checkNotNull(request);
+        checkNotEmpty(request.getFirstName());
+        checkNotEmpty(request.getLastName());
+        checkNotEmpty(request.getPresentType());
     }
+
+    @Override
+    public void processFactoryNotification(SupplyNotification notification) throws ResourceNotFoundException {
+        checkNotification(notification);
+
+        String presentTypeName = notification.getPresentType();
+        int quantity = notification.getQuantity();
+
+        PresentType presentType = presentSvc.getPresentType(presentTypeName);
+
+        presentSvc.addPresents(presentType, quantity);
+    }
+
+    private void checkNotification(SupplyNotification notification) {
+        checkNotNull(notification);
+        checkNotEmpty(notification.getPresentType());
+        checkPositive(notification.getQuantity());
+    }
+
 }

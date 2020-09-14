@@ -1,6 +1,7 @@
 package org.example.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "present_to_person")
@@ -9,11 +10,18 @@ public class PresentToPerson {
     private long id;
     private PresentType presentType;
     private Person person;
+    private Date date;
 
     public PresentToPerson() {}
 
+    public PresentToPerson(PresentType presentType, Person person) {
+        this.presentType = presentType;
+        this.person = person;
+        this.setDate(new Date());
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getId() {
         return id;
     }
@@ -23,7 +31,7 @@ public class PresentToPerson {
     }
 
     @ManyToOne
-    @JoinColumn(name = "present_type_id", referencedColumnName = "present_type_id")
+    @JoinColumn(name = "present_type_id")
     public PresentType getPresentType() {
         return presentType;
     }
@@ -33,12 +41,22 @@ public class PresentToPerson {
     }
 
     @ManyToOne
-    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
+    @JoinColumn(name = "person_id")
     public Person getPerson() {
         return person;
     }
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    @Column(name = "present_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }
