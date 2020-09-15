@@ -2,6 +2,7 @@ package org.example.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -32,5 +33,19 @@ public class PresentType {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PresentType)) return false;
+        PresentType that = (PresentType) o;
+        return id == that.id &&
+                Objects.equals(typeName, that.typeName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, typeName);
     }
 }
