@@ -20,6 +20,10 @@ public abstract class Response {
         message = builder.toString();
     }
 
+    public Response(String message) {
+        this.message = message;
+    }
+
     protected abstract String addAction();
     protected abstract String addReason();
 

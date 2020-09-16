@@ -1,5 +1,7 @@
 package org.example.system.impl;
 
+import org.example.exceptions.BehaviorException;
+import org.example.exceptions.EmptyStorageException;
 import org.example.exceptions.ResourceNotFoundException;
 import org.example.model.Person;
 import org.example.model.PresentType;
@@ -26,24 +28,18 @@ public class DispatcherImpl implements Dispatcher {
     private PostService postSvc;
 
     @Override
-    public Response processUserRequest(Request request) throws ResourceNotFoundException {
+    public Response processUserRequest(Request request) throws ResourceNotFoundException, BehaviorException {
         checkRequest(request);
 
-        String firstName = request.getFirstName();
-        String lastName = request.getLastName();
-        String present = request.getPresentType();
+        Person person = personSvc.getPerson(request.getFirstName(), request.getLastName());
 
-        Person person = personSvc.getPerson(firstName, lastName);
+        controlBehavior(person);
 
-        boolean behavior = behaviorSvc.requestBehavior(person);
+        PresentType presentType = presentSvc.getPresentType(request.getPresentType());
 
-        if (!behavior) {
-            return new BadResponse(firstName, lastName, present);
-        }
+        controlPresentQuantity(presentType);
 
-        PresentType presentType = presentSvc.takePresent(present);
-
-        postSvc.sendPresentTo(presentType, person);
+        postSvc.sendPresentTo(presentSvc.takePresent(presentType), person);
 
         return new SuccessResponse(person.getFirstName(), person.getLastName(), presentType.getTypeName());
     }
@@ -53,6 +49,35 @@ public class DispatcherImpl implements Dispatcher {
         checkNotEmpty(request.getFirstName());
         checkNotEmpty(request.getLastName());
         checkNotEmpty(request.getPresentType());
+    }
+
+    private void controlPresentQuantity(PresentType presentType) throws ResourceNotFoundException {
+        int presentQuantity = presentSvc.getQuantity(presentType);
+
+        if (notEnoughQuantityCritical(presentQuantity)) {
+            postSvc.requestProduction(presentType, PresentService.REQUEST_BORDER * 2);
+            throw new EmptyStorageException("All storages are empty now. Request already sent to factory");
+        }
+
+        if (notEnoughQuantityWarning(presentQuantity)) {
+            postSvc.requestProduction(presentType, PresentService.REQUEST_BORDER + 1);
+        }
+    }
+
+    private void controlBehavior(Person person) throws BehaviorException {
+        boolean behavior = behaviorSvc.requestBehavior(person);
+
+        if (!behavior) {
+            throw new BehaviorException(person + " cannot receive the present because of bad behavior");
+        }
+    }
+
+    private boolean notEnoughQuantityWarning(int quantity) {
+        return quantity < PresentService.REQUEST_BORDER;
+    }
+
+    private boolean notEnoughQuantityCritical(int quantity) {
+        return quantity < 1;
     }
 
     @Override

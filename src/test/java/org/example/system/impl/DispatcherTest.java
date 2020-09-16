@@ -1,6 +1,8 @@
 package org.example.system.impl;
 
 import org.example.exceptions.BadArgumentException;
+import org.example.exceptions.BehaviorException;
+import org.example.exceptions.EmptyStorageException;
 import org.example.exceptions.ResourceNotFoundException;
 import org.example.model.Person;
 import org.example.model.PresentType;
@@ -44,6 +46,7 @@ public class DispatcherTest {
     private Response successResponse;
     private Response badResponse;
     private Person person;
+    private PresentType presentType;
 
     @TestConfiguration
     public static class DispatcherImplTestContextConfiguration {
@@ -70,15 +73,17 @@ public class DispatcherTest {
         request.setLastName(lastName);
         request.setPresentType(typeName);
 
-        PresentType presentType = new PresentType();
+        presentType = new PresentType();
         presentType.setTypeName(typeName);
 
         successResponse = new SuccessResponse(firstName, lastName, typeName);
         badResponse = new BadResponse(firstName, lastName, typeName);
 
         when(personSvc.getPerson(firstName, lastName)).thenReturn(person);
-        when(presentSvc.takePresent(typeName)).thenReturn(presentType);
+        when(presentSvc.takePresent(presentType)).thenReturn(presentType);
+        when(presentSvc.getPresentType(request.getPresentType())).thenReturn(presentType);
 
+        doNothing().when(postSvc).requestProduction(presentType, PresentService.REQUEST_BORDER * 2);
         doNothing().when(postSvc).sendPresentTo(presentType, person);
     }
 
@@ -87,8 +92,9 @@ public class DispatcherTest {
      * @throws ResourceNotFoundException
      */
     @Test
-    public void testProcessUserRequestSuccessResponse() throws ResourceNotFoundException {
+    public void testProcessUserRequestSuccessResponse() throws ResourceNotFoundException, BehaviorException {
         when(behaviorSvc.requestBehavior(person)).thenReturn(true);
+        when(presentSvc.getQuantity(presentType)).thenReturn(5);
         Response actualResponse = dispatcher.processUserRequest(request);
 
         Assert.assertEquals(successResponse.getMessage(), actualResponse.getMessage());
@@ -98,12 +104,23 @@ public class DispatcherTest {
      * Sends correct request and expects bad response.
      * @throws ResourceNotFoundException
      */
-    @Test
-    public void testProcessUserRequestBadResponse() throws ResourceNotFoundException {
+    @Test(expected = BehaviorException.class)
+    public void testProcessUserRequestBadResponse() throws ResourceNotFoundException, BehaviorException {
         when(behaviorSvc.requestBehavior(person)).thenReturn(false);
-        Response actualResponse = dispatcher.processUserRequest(request);
+        dispatcher.processUserRequest(request);
+    }
 
-        Assert.assertEquals(badResponse.getMessage(), actualResponse.getMessage());
+    /**
+     * Expects EmptyStorageException when PresentType quantity < 1.
+     * @throws ResourceNotFoundException
+     * @throws BehaviorException
+     */
+    @Test(expected = EmptyStorageException.class)
+    public void testProcessUserRequestEmptyStorageException() throws ResourceNotFoundException, BehaviorException {
+        when(behaviorSvc.requestBehavior(person)).thenReturn(true);
+        when(presentSvc.getQuantity(presentType)).thenReturn(0);
+
+        dispatcher.processUserRequest(request);
     }
 
     /**
@@ -111,7 +128,7 @@ public class DispatcherTest {
      * @throws ResourceNotFoundException
      */
     @Test(expected = BadArgumentException.class)
-    public void testProcessUserRequestExceptionWhenRequestEmpty() throws ResourceNotFoundException {
+    public void testProcessUserRequestExceptionWhenRequestEmpty() throws ResourceNotFoundException, BehaviorException {
         dispatcher.processUserRequest(null);
     }
 
@@ -120,7 +137,7 @@ public class DispatcherTest {
      * @throws ResourceNotFoundException
      */
     @Test(expected = BadArgumentException.class)
-    public void testProcessUserRequestExceptionWhenParamsEmpty() throws ResourceNotFoundException {
+    public void testProcessUserRequestExceptionWhenParamsEmpty() throws ResourceNotFoundException, BehaviorException {
         Request request = new Request();
         dispatcher.processUserRequest(request);
     }

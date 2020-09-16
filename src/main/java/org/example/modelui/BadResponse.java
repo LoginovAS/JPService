@@ -6,6 +6,10 @@ public class BadResponse extends Response {
         super(firstName, lastName, present);
     }
 
+    public BadResponse(String message) {
+        super(message);
+    }
+
     @Override
     protected String addAction() {
         return "cannot receive";

@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.exceptions.BehaviorException;
 import org.example.exceptions.ResourceNotFoundException;
 import org.example.modelui.Response;
 import org.example.modelui.Request;
@@ -19,7 +20,7 @@ public class PresentController {
     private Dispatcher dispatcher;
 
     @PostMapping("/request")
-    public ResponseEntity<Response> requestPresent(@Valid @RequestBody Request request) throws ResourceNotFoundException {
+    public ResponseEntity<Response> requestPresent(@Valid @RequestBody Request request) throws ResourceNotFoundException, BehaviorException {
         return ResponseEntity.ok(dispatcher.processUserRequest(request));
     }
 

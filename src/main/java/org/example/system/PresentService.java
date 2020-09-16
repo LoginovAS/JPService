@@ -1,6 +1,8 @@
 package org.example.system;
 
+import org.example.exceptions.EmptyStorageException;
 import org.example.exceptions.ResourceNotFoundException;
+import org.example.model.PresentQuantity;
 import org.example.model.PresentType;
 
 /**
@@ -9,12 +11,14 @@ import org.example.model.PresentType;
  */
 public interface PresentService {
 
+    static final int REQUEST_BORDER = 3;
+
     /**
      * Tries to find existing PresentType.
      * If PresentType has been found return it and decrease quantity by one.
      * If PresentType does not exist throws {@link ResourceNotFoundException}
      */
-    PresentType takePresent(String typeName) throws ResourceNotFoundException;
+    PresentType takePresent(PresentType presentType) throws ResourceNotFoundException;
 
     /**
      * Tries to find existing PresentType.
@@ -30,5 +34,7 @@ public interface PresentService {
      * @throws ResourceNotFoundException
      */
     void addPresents(PresentType presentType, int quantity) throws ResourceNotFoundException;
+
+    int getQuantity(PresentType presentType) throws ResourceNotFoundException;
 
 }
