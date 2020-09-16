@@ -82,6 +82,10 @@ public class DispatcherTest {
         doNothing().when(postSvc).sendPresentTo(presentType, person);
     }
 
+    /**
+     * Sends correct request and expects success response.
+     * @throws ResourceNotFoundException
+     */
     @Test
     public void testProcessUserRequestSuccessResponse() throws ResourceNotFoundException {
         when(behaviorSvc.requestBehavior(person)).thenReturn(true);
@@ -90,6 +94,10 @@ public class DispatcherTest {
         Assert.assertEquals(successResponse.getMessage(), actualResponse.getMessage());
     }
 
+    /**
+     * Sends correct request and expects bad response.
+     * @throws ResourceNotFoundException
+     */
     @Test
     public void testProcessUserRequestBadResponse() throws ResourceNotFoundException {
         when(behaviorSvc.requestBehavior(person)).thenReturn(false);
@@ -98,11 +106,19 @@ public class DispatcherTest {
         Assert.assertEquals(badResponse.getMessage(), actualResponse.getMessage());
     }
 
+    /**
+     * Expects BadArgumentException in case of null request.
+     * @throws ResourceNotFoundException
+     */
     @Test(expected = BadArgumentException.class)
     public void testProcessUserRequestExceptionWhenRequestEmpty() throws ResourceNotFoundException {
         dispatcher.processUserRequest(null);
     }
 
+    /**
+     * Expects BadArgumentException in case of request with empty fields.
+     * @throws ResourceNotFoundException
+     */
     @Test(expected = BadArgumentException.class)
     public void testProcessUserRequestExceptionWhenParamsEmpty() throws ResourceNotFoundException {
         Request request = new Request();

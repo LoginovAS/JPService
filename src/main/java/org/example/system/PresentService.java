@@ -4,7 +4,8 @@ import org.example.exceptions.ResourceNotFoundException;
 import org.example.model.PresentType;
 
 /**
- * Works with present store. Can find, take or add presents.
+ * Works with present store (PresentType and PresentQuantity repos).
+ * Can find, take or add presents.
  */
 public interface PresentService {
 
