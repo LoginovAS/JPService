@@ -5,7 +5,6 @@ import org.example.model.Person;
 import org.example.model.PresentType;
 import org.example.modelui.*;
 import org.example.system.*;
-import org.example.validation.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

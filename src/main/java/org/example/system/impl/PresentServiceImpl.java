@@ -8,7 +8,6 @@ import org.example.repository.PresentQuantityRepository;
 import org.example.repository.PresentTypeRepository;
 import org.example.system.PresentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
