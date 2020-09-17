@@ -17,11 +17,32 @@ e.g
 
 The system tries to find person by "firstName" and "lastName" and present type by "presentType" . In case of person or present type were not found system returns 404 NOT_FOUND code.
 If person found system checks his behavior. 
-If behavior is bad system returns message:
-e.g. "Dmitry Petrov cannot receive Car because of bad behavior".
+If behavior is bad system returns exception:
+{
+    "timestamp": "2020-09-17T06:51:43.832+0000",
+    "status": 200,
+    "error": "OK",
+    "message": "Dmitry Petrov cannot receive the present because of bad behavior",
+    "path": "/api/request"
+}
 
 If behavior is good system returns message:
 e.g. "Dmitry Petrov received Car because of good behavior"
+
+### Request production
+There is PFSystem application used to produce addition presents. 
+https://github.com/LoginovAS/PFSystem
+It should be started for the supply scenario to work correctly.
+
+When specified PresentType quantity is less then 3, the JPService calls PFSystem production API:
+http://localhost:8190/api/produce
+and sends JSON:
+ {
+     "presentType": "Car",
+     "quantity": 5
+ }
+ 
+In its turn PFSystem calls JPService's supply API.
 
 ### Supply API
 External system can add some number of specified presents.
