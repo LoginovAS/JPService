@@ -31,6 +31,8 @@ public class PresentType {
         this.typeName = typeName;
     }
 
+    // TODO: Check again and rewrite hashCode/equals section because of some doubts about id field.
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

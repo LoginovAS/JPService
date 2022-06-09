@@ -66,3 +66,4 @@ External system can add some number of specified presents.
   - Code should be covered by unit tests.
   - Communication between services should be async. Apply any queue broker like Kafka. 
   - Remove any hardcode like URL. Move them to param file.
+  - Check again and rewrite hashCode/equals section because of some doubts about id field.

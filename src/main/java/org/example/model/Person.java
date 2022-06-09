@@ -41,6 +41,8 @@ public class Person {
         this.lastName = lastName;
     }
 
+    // TODO: Check again and rewrite hashCode/equals section because of some doubts about id field.
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
